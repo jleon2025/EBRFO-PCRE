@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escuela Bachiller Rafael Francisco Osejo</title>
+    <!-- Agregar Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            overflow-y: scroll; /* Allow vertical scrolling */
+            margin: 0; /* Remove default margin */
+            height: 100vh; /* Full viewport height */
+        }
+        .container {
+            width: 100%; /* Adjust the width of the main container */
+            height: 100vh; /* Full viewport height */
+            overflow-y: auto; /* Allow vertical scrolling within the container */
+            padding: 0 50px; /* Add padding to avoid horizontal scroll */
+        }
+        table {
+            width: 100%;
+            table-layout: auto; /* Change from fixed to auto */
+            overflow-y: auto; /* Allow vertical scrolling within the table */
+        }
+        th, td {
+            word-wrap: break-word; /* Ensure content wraps within the cell */
+            text-align: center; /* Center the text in table cells */
+            vertical-align: middle; /* Center the text vertically */
+            color: black; /* Change text color to black */
+            font-weight: normal; /* Remove bold text */
+            border: 1px solid #ccc; /* Add grey borders */
+        }
+        table th, table td {
+            font-size: 12px; /* Adjust the font size as needed */
+        }
+        .modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .modal.hide {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        /* Add these styles */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            display: none;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        /* New styles for cursor change */
+        #employeeTable td:nth-child(1),
+        #employeeTable td:nth-child(2) {
+            cursor: pointer;
+        }
+        /* New styles for hover effect */
+        #employeeTable td:nth-child(1):hover,
+        #employeeTable td:nth-child(2):hover {
+            background-color: #e0f7fa; /* Light blue background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+            cursor: pointer; /* Pointer cursor */
+        }
+        /* Footer styles */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(24, 41, 81, 1); /* Semi-transparent black background */
+            position: fixed; /* Change to fixed */
+            bottom: 0; /* Align to bottom */
+            width: 100%; /* Adjust width to fit content */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            font-size: 14px;
+            color: white; /* Change text color to white */
+        }
+        .container {
+            padding-bottom: 60px; /* Add padding to avoid content being hidden under the footer */
+        }
+        .btn {
+            background-color: rgba(201, 167, 101, 0.7) !important; /* Semi-transparent button color */
+            color: white !important; /* White text color */
+            border-color: rgba(201, 167, 101, 0.7) !important; /* Match border color */
+            transition: background-color 0.2s ease-out;
+            font-size: 12px; /* ajusta El tamaño de las fuentes del texto
+        }
+        .btn:hover {
+            background-color: rgba(201, 167, 101, 1) !important; /* Full color on hover */
+            border-color: rgba(201, 167, 101, 1) !important; /* Match border color on hover */
+        }
+        .btn span {
+            padding: 10px;
+            font-size: 14px; /* Adjust the font size as needed */
+        }
+        .btn-secondary {
+            background-color: rgba(201, 167, 101, 0.7) !important; /* Semi-transparent button color */
+            border-color: rgba(201, 167, 101, 0.7) !important; /* Match border color */
+            color: white !important; /* White text color */
+        }
+        .btn-secondary:hover {
+            background-color: rgba(201, 167, 101, 1) !important; /* Full color on hover */
+            border-color: rgba(201, 167, 101, 1) !important; /* Match border color on hover */
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .button-group-left {
+            display: flex;
+            gap: 10px;
+        }
+        .button-group-right {
+            display: flex;
+            gap: 10px;
+        }
+        th {
+            background-color: transparent !important; /* Remove background color */
+            color: black !important; /* Black text */
+            font-weight: normal !important; /* Remove bold text */
+        }
+        #incidentTable th, #incidentTable td {
+            background-color: transparent !important; /* Remove background color */
+            color: black !important; /* Black text */
+            font-weight: normal !important; /* Remove bold text */
+        }
+        h1 {
+            padding: 10px;
+            background-color: rgba(24, 41, 81, 1); /* Semi-transparent blue background */
+            width: 100%; /* Adjust width to fit content */
+            font-size: 25px;
+            color: rgba(201, 167, 101, 1); /* RGB color */
+            position: relative;
+            text-shadow: 1px 1px 2px black; /* Add white border to text */
+        }
+        h1 img {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        h2 {
+            font-size: 20px;
+            color: rgba(24, 41, 81, 1); /* RGB color */
+            text-shadow: 1px 1px 2px black; /* Add white border to text */
+        }
+        .modal-header {
+            background-color: rgba(24, 41, 81, 1); /* Semi-transparent blue background */
+            color: white; /* White text color */
+        }
+        .modal-header .close {
+            color: rgba(201, 167, 101, 1); /* RGB color */
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+        .modal-error .error-message {
+            color: red;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center">
+        <h1>Escuela Rafael Bachiller Francisco Osejo
+        <img src="../src/Pictures/1.png" alt="" class="img-fluid" style="vertical-align: middle; width: 40px; height: 50px;">
+    </h1>
+        <h2>Registro del personal administrativo y docente</h2>
+    </div>
+    <div class="container mt-5">
+                <div class="button-group">
+            <div class="button-group-left">
+                <button id="addEmployeeBtn" class="btn btn-primary" onclick="showAddEmployeeForm()">
+                    <span>Agregar</span>
+                    <span><i class="fas fa-user-plus" aria-hidden="true"></i></span>
+                </button>
+                <button id="printBtn" class="btn btn-secondary">
+                    <span>Imprimir</span>
+                    <span><i class="fas fa-print" aria-hidden="true"></i></span>
+                </button>
+                <!-- Removed the "Reporte" button -->
+            </div>
+            <div class="button-group-right">
+                <button id="adminMenuBtn" class="btn btn-info" onclick="showAdminMenu()">
+                    <span>Menú Administrador</span>
+                    <span><i class="fas fa-cogs" aria-hidden="true"></i></span>
+                </button>
+                <button id="logoutBtn" class="btn btn-danger" onclick="logout()">
+                    <span>Cerrar sesión</span>
+                    <span><i class="fas fa-sign-out-alt" aria-hidden="true"></i></span>
+                </button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="filterInput">Filtrar por Nombre o Cédula:</label>
+            <input type="text" id="filterInput" class="form-control" placeholder="Ingrese nombre o cédula" oninput="filterEmployees()">
+        </div>
+        <table id="employeeTable" class="table table-striped table-bordered table-auto">
+            <thead class="thead-blue">
+                <tr>
+                    <th>Cédula</th>
+                    <th>Nombre Completo</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Teléfono</th>
+                    <th>Clase de Puesto</th>
+                    <th>Especialidad</th>
+                    <th>Plaza</th>
+                    <th>Rige del Nombramiento</th>
+                    <th>Vence del Nombramiento</th>
+                    <th>Condición del Nombramiento</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas de empleados se insertarán dinámicamente aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modales -->
+    <div id="employeeSummary" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resumen del Empleado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeSummary()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr><td>Nombre Completo:</td><td id="summaryFullName"></td></tr>
+                            <tr><td>Cédula:</td><td id="summaryId"></td></tr>
+                            <tr><td>Fecha de Nacimiento:</td><td id="summaryBirthDate"></td></tr>
+                            <tr><td>Teléfono:</td><td id="summaryPhone"></td></tr>
+                            <tr><td>Clase de Puesto:</td><td id="summaryJobClass"></td></tr>
+                            <tr><td>Especialidad:</td><td id="summarySpecialty"></td></tr>
+                            <tr><td>Plaza:</td><td id="summaryPosition"></td></tr>
+                            <tr><td>Rige del Nombramiento:</td><td id="summaryStartDate"></td></tr>
+                            <tr><td>Vence del Nombramiento:</td><td id="summaryEndDate"></td></tr>
+                            <tr><td>Condición del Nombramiento:</td><td id="summaryAppointmentCondition"></td></tr>
+                            <tr><td>Estado:</td><td id="summaryStatus"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="printSummary()">
+                        <span>Imprimir</span>
+                        <span><i class="fas fa-print" aria-hidden="true"></i></span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeSummary()">
+                        <span>Regresar</span>
+                        <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="employeeMenu" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="menuEmployeeName"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeMenu()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button class="btn btn-primary btn-block" onclick="addEditIncident()">Agregar/Editar Incidencia</button>
+                    <button class="btn btn-info btn-block" onclick="viewIncidents()">Visualizar Incidencias</button>
+                    <button class="btn btn-warning btn-block" onclick="showEditEmployeeForm()">Editar</button> <!-- Added the "Editar" button -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeMenu()">
+                        <span>Regresar</span>
+                        <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="incidentsSummary" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document"> <!-- Added modal-lg class for larger width -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Incidencias Registradas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeIncidentsSummary()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="incidentEmployeeDetails"></h3>
+                    <table id="incidentTable" class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Fecha Rige</th>
+                                <th>Fecha Vence</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las incidencias se insertarán dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="printIncidents()">
+                        <span>Imprimir</span>
+                        <span><i class="fas fa-print" aria-hidden="true"></i></span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeIncidentsSummary()">
+                        <span>Regresar</span>
+                        <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupTitle">Agregar / Editar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeAddEmployeeForm()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="employeeForm">
+                        <div class="form-group">
+                            <label for="id">Cédula:</label>
+                            <input type="text" id="id" class="form-control" placeholder="Solo números, máx. 20 dígitos" maxlength="20" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="form-group">
+                            <label for="fullName">Nombre Completo:</label>
+                            <input type="text" id="fullName" class="form-control" placeholder="Formato Nombre Nombre Apellido Apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthDate">Fecha de Nacimiento:</label>
+                            <input type="date" id="birthDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Teléfono:</label>
+                            <input type="text" id="phone" class="form-control" placeholder="0000-0000" maxlength="9" required oninput="formatPhone(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="jobClass">Clase de Puesto:</label>
+                            <select id="jobClass" class="form-control" required>
+                                <option value="Oficinista">Oficinista</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Conserje">Conserje</option>
+                                <option value="Auxiliar de vigilancia">Auxiliar de vigilancia</option>
+                                <option value="Oficial de Seguridad">Oficial de Seguridad</option>
+                                <option value="Cocinero">Cocinero</option>
+                                <option value="Docente Reubicado">Docente Reubicado</option>
+                                <option value="Bibliotecólogo">Bibliotecólogo</option>
+                                <option value="Director">Director</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="specialty">Especialidad:</label>
+                            <select id="specialty" class="form-control" required>
+                                <option value="Labores Varias de Oficina">Labores Varias de Oficina</option>
+                                <option value="Sin especialidad">Sin especialidad</option>
+                                <option value="Educación Física">Educación Física</option>
+                                <option value="Lengua indígena Bribrí">Lengua indígena Bribrí</option>
+                                <option value="Educación Religiosa">Educación Religiosa</option>
+                                <option value="Educación Informática">Educación Informática</option>
+                                <option value="Preescolar Bilingüe">Preescolar Bilingüe</option>
+                                <option value="Enseñanza del Inglés">Enseñanza del Inglés</option>
+                                <option value="Problemas de Aprendizaje">Problemas de Aprendizaje</option>
+                                <option value="Problemas de Conducta">Problemas de Conducta</option>
+                                <option value="Discapacidad Cognitiva">Discapacidad Cognitiva</option>
+                                <option value="Aula Integrada">Aula Integrada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="position">Plaza:</label>
+                            <input type="text" id="position" class="form-control" placeholder="Solo números, máx. 10 dígitos" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Rige del Nombramiento:</label>
+                            <input type="date" id="startDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">Vence del Nombramiento:</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Estado:</label>
+                            <select id="status" class="form-control" required>
+                                <option value="Activo">ACTIVO</option>
+                                <option value="Inactivo">INACTIVO</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentCondition">Condición del Nombramiento:</label>
+                            <select id="appointmentCondition" class="form-control" required>
+                                <option value="interino">Interino</option>
+                                <option value="propiedad">Propiedad</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <span>Guardar</span>
+                                <span><i class="fas fa-save" aria-hidden="true"></i></span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeAddEmployeeForm()">
+                                <span>Regresar</span>
+                                <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add overlay div -->
+    <div id="overlay" class="overlay"></div>
+    <div id="adminMenuModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Menú Administrador</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeAdminMenu()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Ingrese el código de confirmación para acceder al menú administrador:</p>
+                    <input type="password" id="adminConfirmationCode" class="form-control" placeholder="Código de confirmación">
+                    <span class="error-message" style="display: none; color: red;">Código de confirmación incorrecto.</span>
+                    <button type="button" class="btn btn-primary mt-2" onclick="verifyAdminCode()">
+                        <span>Acceder</span>
+                        <span><i class="fas fa-sign-in-alt" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeAdminMenu()">
+                        <span>Cerrar</span>
+                        <span><i class="fas fa-times" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminOptionsModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Opciones de Administrador</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeAdminMenu()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button id="importDbBtn" class="btn btn-success btn-block" onclick="importDatabase()">
+                        <span>Importar DB</span>
+                        <span><i class="fas fa-file-import" aria-hidden="true"></i></span>
+                    </button>
+                    <button id="exportDbBtn" class="btn btn-warning btn-block" onclick="exportDatabase()">
+                        <span>Exportar DB</span>
+                        <span><i class="fas fa-file-export" aria-hidden="true"></i></span>
+                    </button>
+                    <button id="deleteDbBtn" class="btn btn-danger btn-block" onclick="showDeleteConfirmation()">
+                        <span>Eliminar DB</span>
+                        <span><i class="fas fa-trash" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeAdminMenu()">
+                        <span>Cerrar</span>
+                        <span><i class="fas fa-times" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteConfirmationModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeDeleteConfirmation()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seleccione una opción de eliminación:</p>
+                    <button type="button" class="btn btn-danger btn-block" onclick="showDeleteByCedula()">Eliminar por Cédula</button>
+                    <button type="button" class="btn btn-danger btn-block" onclick="showDeleteAll()">Eliminar Todo</button>
+                    <div id="deleteByCedula" style="display: none;">
+                        <p>Ingrese la cédula del empleado a eliminar:</p>
+                        <input type="text" id="deleteCedula" class="form-control" placeholder="Cédula">
+                        <p>Ingrese el código de confirmación:</p>
+                        <input type="password" id="deleteCedulaConfirmationCode" class="form-control" placeholder="Código de confirmación">
+                        <button type="button" class="btn btn-danger mt-2" onclick="deleteByCedula()">Eliminar</button>
+                    </div>
+                    <div id="deleteAll" style="display: none;">
+                        <p>Ingrese el código de confirmación para eliminar todos los datos:</p>
+                        <input type="password" id="confirmationCode" class="form-control" placeholder="Código de confirmación">
+                        <button type="button" class="btn btn-danger mt-2" onclick="deleteDatabase()">Eliminar Todo</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="returnToAdminMenu()">
+                        <span>Regresar</span>
+                        <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteSummaryModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resumen de Datos Eliminados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Se eliminaron los siguientes empleados:</p>
+                    <ul id="deletedEmployeesList"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <span>Cerrar</span>
+                        <span><i class="fas fa-times" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editEmployeeModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Datos del Empleado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeEditEmployeeForm()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEmployeeForm">
+                        <div class="form-group">
+                            <label for="editId">Cédula:</label>
+                            <input type="text" id="editId" class="form-control" placeholder="Solo números, máx. 20 dígitos" maxlength="20" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="editFullName">Nombre Completo:</label>
+                            <input type="text" id="editFullName" class="form-control" placeholder="Formato Nombre Nombre Apellido Apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBirthDate">Fecha de Nacimiento:</label>
+                            <input type="date" id="editBirthDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhone">Teléfono:</label>
+                            <input type="text" id="editPhone" class="form-control" placeholder="0000-0000" maxlength="9" required oninput="formatPhone(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="editJobClass">Clase de Puesto:</label>
+                            <select id="editJobClass" class="form-control" required>
+                                <option value="Oficinista">Oficinista</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Conserje">Conserje</option>
+                                <option value="Auxiliar de vigilancia">Auxiliar de vigilancia</option>
+                                <option value="Oficial de Seguridad">Oficial de Seguridad</option>
+                                <option value="Cocinero">Cocinero</option>
+                                <option value="Docente Reubicado">Docente Reubicado</option>
+                                <option value="Bibliotecólogo">Bibliotecólogo</option>
+                                <option value="Director">Director</option>
+                                <option value="Educación Religiosa">Educación Religiosa</option>
+                                <option value="Educación Informática">Educación Informática</option>
+                                <option value="Preescolar Bilingüe">Preescolar Bilingüe</option>
+                                <option value="Enseñanza del Inglés">Enseñanza del Inglés</option>
+                                <option value="Problemas de Aprendizaje">Problemas de Aprendizaje</option>
+                                <option value="Problemas de Conducta">Problemas de Conducta</option>
+                                <option value="Discapacidad Cognitiva">Discapacidad Cognitiva</option>
+                                <option value="Matemáticas">Matemáticas</option>
+                                <option value="Ciencias">Ciencias</option>
+                                <option value="Estudios Sociales">Estudios Sociales</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSpecialty">Especialidad:</label>
+                            <select id="editSpecialty" class="form-control" required>
+                                <option value="Labores Varias de Oficina">Labores Varias de Oficina</option>
+                                <option value="Sin especialidad">Sin especialidad</option>
+                                <option value="Educación Física">Educación Física</option>
+                                <option value="Lengua indígena Bribrí">Lengua indígena Bribrí</option>
+                                <option value="Educación Religiosa">Educación Religiosa</option>
+                                <option value="Educación Informática">Educación Informática</option>
+                                <option value="Preescolar Bilingüe">Preescolar Bilingüe</option>
+                                <option value="Enseñanza del Inglés">Enseñanza del Inglés</option>
+                                <option value="Problemas de Aprendizaje">Problemas de Aprendizaje</option>
+                                <option value="Problemas de Conducta">Problemas de Conducta</option>
+                                <option value="Discapacidad Cognitiva">Discapacidad Cognitiva</option>
+                                <option value="Aula Integrada">Aula Integrada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPosition">Plaza:</label>
+                            <input type="text" id="editPosition" class="form-control" placeholder="Solo números, máx. 10 dígitos" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStartDate">Rige del Nombramiento:</label>
+                            <input type="date" id="editStartDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEndDate">Vence del Nombramiento:</label>
+                            <input type="date" id="editEndDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Estado:</label>
+                            <select id="editStatus" class="form-control" required>
+                                <option value="Activo">ACTIVO</option>
+                                <option value="Inactivo">INACTIVO</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAppointmentCondition">Condición del Nombramiento:</label>
+                            <select id="editAppointmentCondition" class="form-control" required>
+                                <option value="interino">Interino</option>
+                                <option value="propiedad">Propiedad</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <span>Guardar</span>
+                                <span><i class="fas fa-save" aria-hidden="true"></i></span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeEditEmployeeForm()">
+                                <span>Regresar</span>
+                                <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Agregar Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.com/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Define a global variable to store the previous state
+        let previousState = '';
+
+        function filterEmployees() {
+            const filterInput = document.getElementById('filterInput').value.toLowerCase();
+            const table = document.getElementById('employeeTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let match = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j].innerText.toLowerCase().includes(filterInput)) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = match ? '' : 'none';
+            }
+        }
+
+        document.getElementById('employeeTable').addEventListener('click', function(event) {
+            if (event.target.tagName === 'BUTTON') {
+                const row = event.target.parentElement.parentElement;
+                if (event.target.innerText === 'Editar') {
+                    editEmployee(row);
+                } else if (event.target.innerText === 'Eliminar') {
+                    deleteEmployee(row);
+                }
+            } else if (event.target.tagName === 'TD') {
+                const row = event.target.parentElement;
+                if (event.target.cellIndex === 0) {
+                    showEmployeeSummary(row);
+                } else if (event.target.cellIndex === 1) {
+                    showEmployeeMenu(row);
+                }
+            }
+        });
+
+        function showEmployeeSummary(row) {
+            document.getElementById('summaryId').innerText = row.cells[0].innerText;
+            document.getElementById('summaryFullName').innerText = row.cells[1].innerText;
+            document.getElementById('summaryBirthDate').innerText = row.cells[2].innerText;
+            document.getElementById('summaryPhone').innerText = row.cells[3].innerText;
+            document.getElementById('summaryJobClass').innerText = row.cells[4].innerText;
+            document.getElementById('summarySpecialty').innerText = row.cells[5].innerText;
+            document.getElementById('summaryPosition').innerText = row.cells[6].innerText;
+            document.getElementById('summaryStartDate').innerText = row.cells[7].innerText;
+            document.getElementById('summaryEndDate').innerText = row.cells[8].innerText;
+            document.getElementById('summaryAppointmentCondition').innerText = row.cells[9].innerText;
+            document.getElementById('summaryStatus').innerText = row.cells[10].innerText;
+            $('#employeeSummary').modal('show');
+            $('#overlay').show();
+            document.body.style.overflow = 'hidden'; // Disable scroll
+        }
+
+        function closeSummary() {
+            $('#employeeSummary').modal('hide');
+            $('#overlay').hide();
+            document.body.style.overflow = 'auto'; // Enable scroll
+        }
+
+        function printSummary() {
+            const summaryContent = document.getElementById('employeeSummary').innerHTML;
+            const headerContent = `
+                <h1>
+                    Escuela Rafael Bachiller Francisco Osejo
+                    <img src="/src/Pictures/2.jpg" alt="" style="vertical-align: middle; width: 85px; height: 100px;">
+                </h1>
+                <h2>Registro del personal administrativo y docente</h2>
+            `;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = headerContent + summaryContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        function showEmployeeMenu(row) {
+            document.getElementById('menuEmployeeName').innerText = row.cells[1].innerText;
+            $('#employeeMenu').modal('show');
+            $('#overlay').show();
+            document.body.style.overflow = 'hidden'; // Disable scroll
+        }
+
+        function closeMenu() {
+            $('#employeeMenu').modal('hide');
+            $('#overlay').hide();
+            document.body.style.overflow = 'auto'; // Enable scroll
+        }
+
+        function addEditIncident() {
+            previousState = 'menu';
+            const employeeName = document.getElementById('menuEmployeeName').innerText;
+            localStorage.setItem('currentEmployee', employeeName);
+            window.location.href = 'registro-incidencias.html';
+        }
+
+        function viewIncidents() {
+            previousState = 'menu';
+            const employeeName = document.getElementById('menuEmployeeName').innerText;
+            const employeeId = document.getElementById('summaryId').innerText;
+            localStorage.setItem('currentEmployee', employeeName);
+            document.getElementById('incidentEmployeeDetails').innerText = `Empleado: ${employeeName} - Cédula: ${employeeId}`;
+            loadIncidents();
+            $('#employeeMenu').modal('hide');
+            $('#incidentsSummary').modal('show');
+            document.body.style.overflow = 'hidden'; // Disable scroll
+        }
+
+        function loadIncidents() {
+            const employeeName = localStorage.getItem('currentEmployee');
+            const incidents = JSON.parse(localStorage.getItem(employeeName + '_incidents')) || [];
+            const tbody = document.getElementById('incidentTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            incidents.forEach((incident, index) => {
+                const row = tbody.insertRow();
+                const cellType = row.insertCell(0);
+                const cellDescription = row.insertCell(1);
+                const cellStartDate = row.insertCell(2);
+                const cellEndDate = row.insertCell(3);
+                const cellStatus = row.insertCell(4);
+                cellType.innerText = incident.type;
+                cellDescription.innerText = incident.description;
+                cellStartDate.innerText = new Date(new Date(incident.startDate).getTime() + new Date(incident.startDate).getTimezoneOffset() * 60000).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                cellEndDate.innerText = new Date(new Date(incident.endDate).getTime() + new Date(incident.endDate).getTimezoneOffset() * 60000).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                cellStatus.innerText = incident.status;
+            });
+        }
+
+        function closeIncidentsSummary() {
+            $('#incidentsSummary').modal('hide');
+            $('#overlay').hide();
+            document.body.style.overflow = 'auto'; // Enable scroll
+            if (previousState === 'menu') {
+                $('#employeeMenu').modal('show');
+            }
+        }
+
+        function printIncidents() {
+            const employeeDetails = document.getElementById('incidentEmployeeDetails').innerText;
+            const printContent = document.getElementById('incidentTable').outerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `<h2>Incidencias Registradas</h2><h3>${employeeDetails}</h3>${printContent}`;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        function showAddEmployeeForm() {
+            $('#popup').modal('show');
+            $('#overlay').show();
+        }
+
+        function closeAddEmployeeForm() {
+            $('#popup').modal('hide');
+            $('#overlay').hide();
+        }
+
+        function addEmployee() {
+            const id = document.getElementById('id').value;
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+
+            // Check for duplicate ID
+            if (employees.some(emp => emp.id === id)) {
+                alert('Cédula duplicada. No se puede registrar el empleado.');
+                return;
+            }
+
+            const fullName = document.getElementById('fullName').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const phone = document.getElementById('phone').value;
+            const jobClass = document.getElementById('jobClass').value;
+            const specialty = document.getElementById('specialty').value;
+            const position = document.getElementById('position').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const appointmentCondition = document.getElementById('appointmentCondition').value;
+            const status = document.getElementById('status').value;
+
+            const employee = {
+                id,
+                fullName,
+                birthDate,
+                phone,
+                jobClass,
+                specialty,
+                position,
+                startDate,
+                endDate,
+                appointmentCondition,
+                status
+            };
+
+            employees.push(employee);
+            localStorage.setItem('employees', JSON.stringify(employees));
+
+            displayEmployees();
+            closeAddEmployeeForm();
+        }
+
+        function editEmployee(button) {
+            const row = button.parentElement.parentElement;
+            const id = row.cells[0].innerText;
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const employee = employees.find(emp => emp.id === id);
+
+            document.getElementById('id').value = employee.id;
+            document.getElementById('fullName').value = employee.fullName;
+            document.getElementById('birthDate').value = employee.birthDate;
+            document.getElementById('phone').value = employee.phone;
+            document.getElementById('jobClass').value = employee.jobClass;
+            document.getElementById('specialty').value = employee.specialty;
+            document.getElementById('position').value = employee.position;
+            document.getElementById('startDate').value = employee.startDate;
+            document.getElementById('endDate').value = employee.endDate;
+            document.getElementById('appointmentCondition').value = employee.appointmentCondition;
+            document.getElementById('status').value = employee.status;
+
+            showAddEmployeeForm();
+
+            // Add event listener to prevent duplicate ID on edit
+            document.getElementById('employeeForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (employees.some(emp => emp.id === id && emp !== employee)) {
+                    alert('Cédula duplicada. No se puede registrar el empleado.');
+                    return;
+                }
+                addEmployee();
+            }, { once: true });
+        }
+
+        function deleteEmployee(button) {
+            const row = button.parentElement.parentElement;
+            const id = row.cells[0].innerText;
+            let employees = JSON.parse(localStorage.getItem('employees')) || [];
+            employees = employees.filter(emp => emp.id !== id);
+            localStorage.setItem('employees', JSON.stringify(employees));
+            displayEmployees();
+        }
+
+        function displayEmployees() {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const table = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = ''; // Clear existing rows
+
+            employees.forEach(employee => {
+                const newRow = table.insertRow();
+                newRow.insertCell(0).innerText = employee.id;
+                newRow.insertCell(1).innerText = employee.fullName;
+                newRow.insertCell(2).innerText = employee.birthDate;
+                newRow.insertCell(3).innerText = employee.phone;
+                newRow.insertCell(4).innerText = employee.jobClass;
+                newRow.insertCell(5).innerText = employee.specialty;
+                newRow.insertCell(6).innerText = employee.position;
+                newRow.insertCell(7).innerText = employee.startDate;
+                newRow.insertCell(8).innerText = employee.endDate;
+                newRow.insertCell(9).innerText = employee.appointmentCondition;
+                newRow.insertCell(10).innerText = employee.status;
+            });
+        }
+
+        document.getElementById('employeeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            addEmployee();
+        });
+
+        function printEmployees() {
+            const table = document.getElementById('employeeTable');
+            const rows = table.getElementsByTagName('tr');
+            let printContent = `
+                <h1>
+                    Escuela Rafael Bachiller Francisco Osejo
+                    <img src="/src/Pictures/2.jpg" alt="" style="vertical-align: middle; width: 85px; height: 100px;">
+                </h1>
+                <h2>Registro del personal administrativo y docente</h2>
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Nombre Completo</th>
+                            <th>Fecha de Nacimiento</th>
+                            <th>Teléfono</th>
+                            <th>Clase de Puesto</th>
+                            <th>Especialidad</th>
+                            <th>Plaza</th>
+                            <th>Rige del Nombramiento</th>
+                            <th>Vence del Nombramiento</th>
+                            <th>Condición del Nombramiento</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                printContent += `
+                    <tr>
+                        <td>${cells[0].innerText}</td>
+                        <td>${cells[1].innerText}</td>
+                        <td>${cells[2].innerText}</td>
+                        <td>${cells[3].innerText}</td>
+                        <td>${cells[4].innerText}</td>
+                        <td>${cells[5].innerText}</td>
+                        <td>${cells[6].innerText}</td>
+                        <td>${cells[7].innerText}</td>
+                        <td>${cells[8].innerText}</td>
+                        <td>${cells[9].innerText}</td>
+                        <td>${cells[10].innerText}</td>
+                    </tr>
+                `;
+            }
+
+            printContent += `
+                    </tbody>
+                </table>
+            `;
+
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        function importDatabase() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = JSON.parse(e.target.result);
+                    localStorage.setItem('employees', JSON.stringify(data.employees));
+                    data.incidents.forEach(incident => {
+                        localStorage.setItem(incident.employeeName + '_incidents', JSON.stringify(incident.incidents));
+                    });
+                    location.reload();
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function exportDatabase() {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const incidents = employees.map(employee => {
+                const employeeName = employee.fullName;
+                const employeeIncidents = JSON.parse(localStorage.getItem(employeeName + '_incidents')) || [];
+                return { employeeName, incidents: employeeIncidents };
+            });
+            const data = { employees, incidents };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'employees_and_incidents.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        $(document).ready(function() {
+            $('#popup').on('hidden.bs.modal', function () {
+                $(this).find('form').trigger('reset');
+            });
+
+            $('#employeeSummary').on('hidden.bs.modal', function () {
+                $(this).removeClass('show');
+                $('#overlay').hide();
+            });
+
+            $('#employeeMenu').on('hidden.bs.modal', function () {
+                $(this).removeClass('show');
+                $('#overlay').hide();
+            });
+
+            $('#incidentsSummary').on('hidden.bs.modal', function () {
+                $(this).removeClass('show');
+                $('#overlay').hide();
+            });
+
+            $('#printBtn').on('click', function() {
+                printEmployees();
+            });
+
+            $('#appointmentCondition').on('change', function() {
+                if ($(this).val() === 'propiedad') {
+                    $('#endDate').prop('disabled', true);
+                } else {
+                    $('#endDate').prop('disabled', false);
+                }
+            });
+
+            $('#editAppointmentCondition').on('change', function() {
+                if ($(this).val() === 'propiedad') {
+                    $('#editEndDate').prop('disabled', true);
+                } else {
+                    $('#editEndDate').prop('disabled', false);
+                }
+            });
+
+            // Load employees from local storage on page load
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const table = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+            employees.forEach(employee => {
+                const newRow = table.insertRow();
+                newRow.insertCell(0).innerText = employee.id;
+                newRow.insertCell(1).innerText = employee.fullName;
+                newRow.insertCell(2).innerText = employee.birthDate;
+                newRow.insertCell(3).innerText = employee.phone;
+                newRow.insertCell(4).innerText = employee.jobClass;
+                newRow.insertCell(5).innerText = employee.specialty;
+                newRow.insertCell(6).innerText = employee.position;
+                newRow.insertCell(7).innerText = employee.startDate;
+                newRow.insertCell(8).innerText = employee.endDate;
+                newRow.insertCell(9).innerText = employee.appointmentCondition;
+                newRow.insertCell(10).innerText = employee.status;
+            });
+        });
+
+        function showAdminMenu() {
+            $('#adminMenuModal').modal('show');
+            $('#overlay').show();
+        }
+
+        function closeAdminMenu() {
+            $('#adminMenuModal').modal('hide');
+            $('#overlay').hide();
+            window.location.href = 'index.html'; // Redirect to the main page
+        }
+
+        async function verifyAdminCode() {
+            const confirmationCode = document.getElementById('adminConfirmationCode').value;
+            const storedHash = localStorage.getItem('deleteCodeHash');
+            const modalBody = document.querySelector('#adminMenuModal .modal-body');
+
+            if (storedHash && await sha256(confirmationCode) === storedHash) {
+                $('#adminMenuModal').modal('hide');
+                $('#adminOptionsModal').modal('show');
+            } else {
+                document.querySelector('.error-message').style.display = 'block';
+            }
+        }
+
+        function showDeleteConfirmation() {
+            $('#adminOptionsModal').modal('hide');
+            $('#deleteConfirmationModal').modal('show');
+        }
+
+        $('#deleteConfirmationModal').on('hidden.bs.modal', function () {
+            $('#adminOptionsModal').modal('show');
+        });
+
+        $('#adminOptionsModal').on('hidden.bs.modal', function () {
+            $('#overlay').hide();
+        });
+
+        $('#deleteConfirmationModal').on('hidden.bs.modal', function () {
+            $('#overlay').hide();
+        });
+
+        function showDeleteByCedula() {
+            document.getElementById('deleteByCedula').style.display = 'block';
+            document.getElementById('deleteAll').style.display = 'none';
+        }
+
+        function showDeleteAll() {
+            document.getElementById('deleteByCedula').style.display = 'none';
+            document.getElementById('deleteAll').style.display = 'block';
+        }
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        async function deleteByCedula() {
+            const cedula = document.getElementById('deleteCedula').value;
+            const confirmationCode = document.getElementById('deleteCedulaConfirmationCode').value;
+            const storedHash = localStorage.getItem('deleteCodeHash');
+
+            if (storedHash && await sha256(confirmationCode) === storedHash) {
+                let employees = JSON.parse(localStorage.getItem('employees')) || [];
+                const employeeIndex = employees.findIndex(emp => emp.id === cedula);
+
+                if (employeeIndex !== -1) {
+                    employees.splice(employeeIndex, 1);
+                    localStorage.setItem('employees', JSON.stringify(employees));
+                    displayEmployees();
+                    alert('Empleado eliminado.');
+                    $('#deleteByCedula').hide();
+                    $('#deleteConfirmationModal').modal('show');
+                } else {
+                    alert('Empleado no encontrado.');
+                }
+            } else {
+                alert('Código de confirmación incorrecto.');
+            }
+        }
+
+        async function deleteDatabase() {
+            const confirmationCode = document.getElementById('confirmationCode').value;
+            const storedHash = localStorage.getItem('deleteCodeHash');
+
+            if (storedHash && await sha256(confirmationCode) === storedHash) {
+                const employees = JSON.parse(localStorage.getItem('employees')) || [];
+                const deletedEmployees = [];
+
+                employees.forEach(employee => {
+                    deletedEmployees.push(employee);
+                    localStorage.removeItem(employee.fullName + '_incidents');
+                });
+
+                localStorage.removeItem('employees');
+                showDeletedEmployeesSummary(deletedEmployees);
+                $('#deleteAll').hide();
+                $('#deleteConfirmationModal').modal('show');
+            } else {
+                alert('Código de confirmación incorrecto.');
+            }
+        }
+
+        function showDeletedEmployeesSummary(deletedEmployees) {
+            const list = document.getElementById('deletedEmployeesList');
+            list.innerHTML = '';
+            deletedEmployees.forEach(employee => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${employee.fullName} (Cédula: ${employee.id})`;
+                list.appendChild(listItem);
+            });
+            $('#deleteSummaryModal').modal('show');
+        }
+
+        function returnToAdminMenu() {
+            $('#deleteConfirmationModal').modal('hide');
+            $('#adminOptionsModal').modal('show');
+        }
+
+        function closeDeleteConfirmation() {
+            $('#deleteConfirmationModal').modal('hide');
+            $('#overlay').hide();
+            window.location.href = 'index.html'; // Redirect to the main page
+        }
+
+        function generateReport() {
+            // Implement the report generation logic here
+            alert('Generar reporte');
+        }
+
+        // Temporizador de 5 minutos (300000 milisegundos)
+        let inactivityTime = function () {
+            let time;
+            window.onload = resetTimer;
+            document.onmousemove = resetTimer;
+            document.onkeypress = resetTimer;
+            document.onscroll = resetTimer;
+            document.onclick = resetTimer;
+
+            function logout() {
+                window.location.href = 'home.html';
+            }
+
+            function resetTimer() {
+                clearTimeout(time);
+                time = setTimeout(logout, 300000); // 5 minutos en milisegundos
+            }
+        };
+
+        inactivityTime();
+
+        function logout() {
+            window.location.href = 'home.html';
+        }
+
+        document.getElementById('adminConfirmationCode').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                document.querySelector('#adminMenuModal .btn-primary').click();
+            }
+        });
+
+        function checkPlazaValue() {
+            const plazaInputs = document.querySelectorAll('#employeeTable td:nth-child(6), #position, #editPosition');
+            plazaInputs.forEach(input => {
+                if (input.value === '00000' || input.innerText === '00000') {
+                    input.value = 'Junta de Educación';
+                    input.innerText = 'Junta Educación';
+                }
+            });
+        }
+
+        document.getElementById('position').addEventListener('input', checkPlazaValue);
+        document.getElementById('editPosition').addEventListener('input', checkPlazaValue);
+
+        function showEditEmployeeForm() {
+            const employeeName = document.getElementById('menuEmployeeName').innerText;
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const employee = employees.find(emp => emp.fullName === employeeName);
+
+            if (employee) {
+                document.getElementById('editId').value = employee.id;
+                document.getElementById('editFullName').value = employee.fullName;
+                document.getElementById('editBirthDate').value = employee.birthDate;
+                document.getElementById('editPhone').value = employee.phone;
+                document.getElementById('editJobClass').value = employee.jobClass;
+                document.getElementById('editSpecialty').value = employee.specialty;
+                document.getElementById('editPosition').value = employee.position;
+                document.getElementById('editStartDate').value = employee.startDate;
+                document.getElementById('editEndDate').value = employee.endDate;
+                document.getElementById('editStatus').value = employee.status;
+                document.getElementById('editAppointmentCondition').value = employee.appointmentCondition;
+
+                $('#editEmployeeModal').modal('show');
+                $('#overlay').show();
+                document.body.style.overflow = 'hidden'; // Disable scroll
+            } else {
+                alert('Empleado no encontrado.');
+            }
+        }
+
+        document.getElementById('editEmployeeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('editId').value;
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const employeeIndex = employees.findIndex(emp => emp.id === id);
+
+            if (employeeIndex !== -1) {
+                employees[employeeIndex] = {
+                    id,
+                    fullName: document.getElementById('editFullName').value,
+                    birthDate: document.getElementById('editBirthDate').value,
+                    phone: document.getElementById('editPhone').value,
+                    jobClass: document.getElementById('editJobClass').value,
+                    specialty: document.getElementById('editSpecialty').value,
+                    position: document.getElementById('editPosition').value,
+                    startDate: document.getElementById('editStartDate').value,
+                    endDate: document.getElementById('editEndDate').value,
+                    status: document.getElementById('editStatus').value,
+                    appointmentCondition: document.getElementById('editAppointmentCondition').value
+                };
+
+                localStorage.setItem('employees', JSON.stringify(employees));
+                displayEmployees();
+                closeEditEmployeeForm();
+            } else {
+                alert('Empleado no encontrado.');
+            }
+        });
+
+        function closeEditEmployeeForm() {
+            $('#editEmployeeModal').modal('hide');
+            $('#overlay').hide();
+            document.body.style.overflow = 'auto'; // Enable scroll
+        }
+
+        function formatPhone(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 4) {
+                value = value.slice(0, 4) + '-' + value.slice(4, 8);
+            }
+            input.value = value;
+        }
+    </script>
+    <footer>
+        © Escuela Bachiller Rafael Francisco Osejo 2025 - todos los derechos reservados.
+    </footer>
+    </div>
+    </div>
+
+    <div id="deleteSummaryModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resumen de Datos Eliminados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Se eliminaron los siguientes empleados:</p>
+                    <ul id="deletedEmployeesList"></ul>
+                </div>
+                <div class="modal-footer"></div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+    <div id="editEmployeeModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Datos del Empleado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeEditEmployeeForm()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEmployeeForm">
+                        <div class="form-group">
+                            <label for="editId">Cédula:</label>
+                            <input type="text" id="editId" class="form-control" placeholder="Solo números, máx. 20 dígitos" maxlength="20" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="editFullName">Nombre Completo:</label>
+                            <input type="text" id="editFullName" class="form-control" placeholder="Formato Nombre Nombre Apellido Apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBirthDate">Fecha de Nacimiento:</label>
+                            <input type="date" id="editBirthDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhone">Teléfono:</label>
+                            <input type="text" id="editPhone" class="form-control" placeholder="0000-0000" maxlength="9" required oninput="formatPhone(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="editJobClass">Clase de Puesto:</label>
+                            <select id="editJobClass" class="form-control" required>
+                                <option value="Oficinista">Oficinista</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Conserje">Conserje</option>
+                                <option value="Auxiliar de vigilancia">Auxiliar de vigilancia</option>
+                                <option value="Oficial de Seguridad">Oficial de Seguridad</option>
+                                <option value="Cocinero">Cocinero</option>
+                                <option value="Docente Reubicado">Docente Reubicado</option>
+                                <option value="Bibliotecólogo">Bibliotecólogo</option>
+                                <option value="Director">Director</option>
+                                <option value="Educación Religiosa">Educación Religiosa</option>
+                                <option value="Educación Informática">Educación Informática</option>
+                                <option value="Preescolar Bilingüe">Preescolar Bilingüe</option>
+                                <option value="Enseñanza del Inglés">Enseñanza del Inglés</option>
+                                <option value="Problemas de Aprendizaje">Problemas de Aprendizaje</option>
+                                <option value="Problemas de Conducta">Problemas de Conducta</option>
+                                <option value="Discapacidad Cognitiva">Discapacidad Cognitiva</option>
+                                <option value="Matemáticas">Matemáticas</option>
+                                <option value="Ciencias">Ciencias</option>
+                                <option value="Estudios Sociales">Estudios Sociales</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSpecialty">Especialidad:</label>
+                            <select id="editSpecialty" class="form-control" required>
+                                <option value="Labores Varias de Oficina">Labores Varias de Oficina</option>
+                                <option value="Sin especialidad">Sin especialidad</option>
+                                <option value="Educación Física">Educación Física</option>
+                                <option value="Lengua indígena Bribrí">Lengua indígena Bribrí</option>
+                                <option value="Educación Religiosa">Educación Religiosa</option>
+                                <option value="Educación Informática">Educación Informática</option>
+                                <option value="Preescolar Bilingüe">Preescolar Bilingüe</option>
+                                <option value="Enseñanza del Inglés">Enseñanza del Inglés</option>
+                                <option value="Problemas de Aprendizaje">Problemas de Aprendizaje</option>
+                                <option value="Problemas de Conducta">Problemas de Conducta</option>
+                                <option value="Discapacidad Cognitiva">Discapacidad Cognitiva</option>
+                                <option value="Aula Integrada">Aula Integrada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPosition">Plaza:</label>
+                            <input type="text" id="editPosition" class="form-control" placeholder="Solo números, máx. 10 dígitos" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStartDate">Rige del Nombramiento:</label>
+                            <input type="date" id="editStartDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEndDate">Vence del Nombramiento:</label>
+                            <input type="date" id="editEndDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Estado:</label>
+                            <select id="editStatus" class="form-control" required>
+                                <option value="Activo">ACTIVO</option>
+                                <option value="Inactivo">INACTIVO</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAppointmentCondition">Condición del Nombramiento:</label>
+                            <select id="editAppointmentCondition" class="form-control" required>
+                                <option value="interino">Interino</option>
+                                <option value="propiedad">Propiedad</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <span>Guardar</span>
+                                <span><i class="fas fa-save" aria-hidden="true"></i></span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeEditEmployeeForm()">
+                                <span>Regresar</span>
+                                <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

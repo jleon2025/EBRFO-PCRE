@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escuela Bachiller Rafael Francisco Osejo</title>
+    <!-- Agregar Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .modal.hide {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            display: none;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        #employeeTable td:nth-child(1),
+        #employeeTable td:nth-child(2) {
+            cursor: pointer;
+        }
+        #employeeTable td:nth-child(1):hover,
+        #employeeTable td:nth-child(2):hover {
+            background-color: #e0f7fa; /* Light blue background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+            cursor: pointer; /* Pointer cursor */
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(24, 41, 81, 1); /* Adjusted background color */
+            position: fixed; /* Change to fixed */
+            bottom: 0; /* Align to bottom */
+            width: 100%; /* Adjust width to fit content */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            font-size: 14px;
+            color: white; /* Change text color to white */
+        }
+        .container {
+            padding-bottom: 60px; /* Add padding to avoid content being hidden under the footer */
+        }
+        #incidentDate {
+            display: none;
+        }
+        /* New styles for buttons */
+        .btn {
+            background-color: rgba(201, 167, 101, 0.7) !important; /* Semi-transparent button color */
+            color: white !important; /* White text color */
+            border-color: rgba(201, 167, 101, 0.7) !important; /* Match border color */
+            transition: background-color 0.2s ease-out;
+        }
+        .btn:hover {
+            background-color: rgba(201, 167, 101, 1) !important; /* Full color on hover */
+            border-color: rgba(201, 167, 101, 1) !important; /* Match border color on hover */
+        }
+        .btn span {
+            padding: 10px;
+        }
+        .btn-secondary {
+            background-color: rgba(201, 167, 101, 0.7) !important; /* Semi-transparent button color */
+            border-color: rgba(201, 167, 101, 0.7) !important; /* Match border color */
+            color: white !important; /* White text color */
+        }
+        .btn-secondary:hover {
+            background-color: rgba(201, 167, 101, 1) !important; /* Full color on hover */
+            border-color: rgba(201, 167, 101, 1) !important; /* Match border color on hover */
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .button-group-left {
+            display: flex;
+            gap: 10px;
+        }
+        .button-group-right {
+            display: flex;
+            gap: 10px;
+        }
+        th {
+            background-color: transparent !important; /* Remove background color */
+            color: black !important; /* Black text */
+            font-weight: normal !important; /* Remove bold text */
+        }
+        #incidentTable th, #incidentTable td {
+            background-color: transparent !important; /* Remove background color */
+            color: black !important; /* Black text */
+            font-weight: normal !important; /* Remove bold text */
+        }
+        /* New styles for modal overlay */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .header-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .header-container h1 {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .header-container img {
+            vertical-align: middle;
+            width: 40px;
+            height: 50px;
+        }
+        /* New styles for h1 and h2 */
+        h1 {
+            padding: 10px;
+            background-color: rgba(24, 41, 81, 1); /* Semi-transparent blue background */
+            width: 100%; /* Adjust width to fit content */
+            font-size: 25px;
+            color: rgba(201, 167, 101, 1); /* RGB color */
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: 0; /* Align to the top */
+            text-align: center; /* Center align the text */
+        }
+        h1 img {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .modal-header {
+            background-color: rgba(24, 41, 81, 1); /* Semi-transparent blue background */
+            color: white; /* White text color */
+        }
+        .modal-header .close {
+            color: rgba(201, 167, 101, 1); /* RGB color */
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Membrete -->
+    <div class="header-container">
+        <h1>Escuela Rafael Bachiller Francisco Osejo
+            <img src="../src/Pictures/1.png" alt="" class="img-fluid">
+        </h1>
+        <h2>Registro del personal administrativo y docente</h2>
+    </div>
+    <!-- Fin del Membrete -->
+
+    <div class="container">
+        <h1 class="text-center my-4">Registro de Incidencias</h1>
+        <h2 id="employeeNameHeader" class="text-center"></h2>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#incidentModal">
+            <span>Registrar Incidencia</span>
+            <span><i class="fas fa-plus" aria-hidden="true"></i></span>
+        </button>
+        <div class="modal fade" id="incidentModal" tabindex="-1" aria-labelledby="incidentModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="incidentModalLabel">Registrar Incidencia</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="incidentForm">
+                            <div class="form-group">
+                                <label for="incidentType">Tipo de Incidencia:</label>
+                                <select id="incidentType" class="form-control" required>
+                                    <option value="Amonestación escrita">Amonestación escrita</option>
+                                    <option value="Amonestación verbal">Amonestación verbal</option>
+                                    <option value="Ausencia justificada">Ausencia justificada</option>
+                                    <option value="Ausencia injustificada">Ausencia injustificada</option>
+                                    <option value="Incapacidad CCSS">Incapacidad CCSS</option>
+                                    <option value="Incapacidad INS">Incapacidad INS</option>
+                                    <option value="Ingreso al C.E.">Ingreso al C.E.</option>
+                                    <option value="Llegada tardía">Llegada tardía</option>
+                                    <option value="Licencia">Licencia</option>
+                                    <option value="Otro detalle">Otro detalle</option>
+                                    <option value="Permiso cita médica">Permiso cita médica</option>
+                                    <option value="Permiso personal">Permiso personal</option>
+                                    <option value="Salida anticipada">Salida anticipada</option>
+                                    <option value="Tardía justificada">Tardía justificada</option>
+                                    <option value="Tardía injustificada">Tardía injustificada</option>
+                                    <option value="Traslado">Traslado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="incidentDescription">Descripción de la Incidencia:</label>
+                                <textarea id="incidentDescription" class="form-control" required placeholder="Anote una breve descripción"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="incidentStartDate">Fecha Rige:</label>
+                                <input type="date" id="incidentStartDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="incidentEndDate">Fecha Vence:</label>
+                                <input type="date" id="incidentEndDate" class="form-control">
+                            </div>
+                            <input type="hidden" id="incidentDate">
+                            <button type="submit" class="btn btn-primary">
+                                <span>Registrar</span>
+                                <span><i class="fas fa-plus" aria-hidden="true"></i></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="my-4">Incidencias Registradas</h2>
+        <h3 id="employeeNameTable"></h3>
+        <h4 id="employeeidTable"></h4>
+        <table id="incidentTable" class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Fecha Rige</th>
+                    <th>Fecha Vence</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las incidencias se insertarán dinámicamente aquí -->
+            </tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="printIncidents()">
+            <span>Imprimir</span>
+            <span><i class="fas fa-print" aria-hidden="true"></i></span>
+        </button>
+        <button class="btn btn-secondary" onclick="goBack()">
+            <span>Regresar</span>
+            <span><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+        </button>
+    </div>
+    <!-- Footer -->
+    <footer>
+        © Escuela Bachiller Rafael Francisco Osejo 2025 - todos los derechos reservados.
+    </footer>
+    <!-- End of Footer -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const employeeName = localStorage.getItem('currentEmployee');
+            document.getElementById('employeeNameHeader').innerText = employeeName;
+            const employeeId = localStorage.getItem('currentEmployeeId');
+            document.getElementById('employeeidTable').innerText = employeeId;
+            document.getElementById('employeeNameTable').innerText = employeeName;
+
+            const incidentForm = document.getElementById('incidentForm');
+            incidentForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const type = document.getElementById('incidentType').value;
+                const description = document.getElementById('incidentDescription').value;
+                const startDate = document.getElementById('incidentStartDate').value;
+                const endDate = document.getElementById('incidentEndDate').value;
+                const date = new Date().toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const incidents = JSON.parse(localStorage.getItem(employeeName + '_incidents')) || [];
+                incidents.push({ type, description, startDate, endDate, date });
+                localStorage.setItem(employeeName + '_incidents', JSON.stringify(incidents));
+                document.getElementById('incidentDescription').value = '';
+                document.getElementById('incidentStartDate').value = '';
+                document.getElementById('incidentEndDate').value = '';
+                $('#incidentModal').modal('hide');
+                loadIncidents();
+            });
+
+            loadIncidents();
+        });
+
+        function loadIncidents() {
+            const employeeName = localStorage.getItem('currentEmployee');
+            const incidents = JSON.parse(localStorage.getItem(employeeName + '_incidents')) || [];
+            const tbody = document.getElementById('incidentTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            incidents.forEach((incident, index) => {
+                const row = tbody.insertRow();
+                const cellType = row.insertCell(0);
+                const cellDescription = row.insertCell(1);
+                const cellStartDate = row.insertCell(2);
+                const cellEndDate = row.insertCell(3);
+                const cellDate = row.insertCell(4);
+                const cellActions = row.insertCell(5);
+                cellType.innerText = incident.type;
+                cellDescription.innerText = incident.description;
+                cellStartDate.innerText = new Date(incident.startDate + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                cellEndDate.innerText = new Date(incident.endDate + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                cellDate.innerText = incident.date;
+                cellActions.innerHTML = `<button class="btn btn-warning btn-sm" onclick="editIncident(${index})">Editar</button> <button class="btn btn-success btn-sm" style="display:none;" onclick="saveIncident(${index})">Guardar</button>`;
+            });
+        }
+
+        function editIncident(index) {
+            const employeeName = localStorage.getItem('currentEmployee');
+            const incidents = JSON.parse(localStorage.getItem(employeeName + '_incidents'));
+            const incident = incidents[index];
+            const row = document.getElementById('incidentTable').rows[index + 1];
+            row.cells[0].innerHTML = `<select id="editType${index}" class="form-control">
+                <option value="Amonestación escrita" ${incident.type === 'Amonestación escrita' ? 'selected' : ''}>Amonestación escrita</option>
+                <option value="Amonestación verbal" ${incident.type === 'Amonestación verbal' ? 'selected' : ''}>Amonestación verbal</option>
+                <option value="Ausencia justificada" ${incident.type === 'Ausencia justificada' ? 'selected' : ''}>Ausencia justificada</option>
+                <option value="Ausencia injustificada" ${incident.type === 'Ausencia injustificada' ? 'selected' : ''}>Ausencia injustificada</option>
+                <option value="Incapacidad CCSS" ${incident.type === 'Incapacidad CCSS' ? 'selected' : ''}>Incapacidad CCSS</option>
+                <option value="Incapacidad INS" ${incident.type === 'Incapacidad INS' ? 'selected' : ''}>Incapacidad INS</option>
+                <option value="Ingreso al C.E." ${incident.type === 'Ingreso al C.E.' ? 'selected' : ''}>Ingreso al C.E.</option>
+                <option value="Llegada tardía" ${incident.type === 'Llegada tardía' ? 'selected' : ''}>Llegada tardía</option>
+                <option value="Licencia" ${incident.type === 'Licencia' ? 'selected' : ''}>Licencia</option>
+                <option value="Otro detalle" ${incident.type === 'Otro detalle' ? 'selected' : ''}>Otro detalle</option>
+                <option value="Permiso cita médica" ${incident.type === 'Permiso cita médica' ? 'selected' : ''}>Permiso cita médica</option>
+                <option value="Permiso personal" ${incident.type === 'Permiso personal' ? 'selected' : ''}>Permiso personal</option>
+                <option value="Salida anticipada" ${incident.type === 'Salida anticipada' ? 'selected' : ''}>Salida anticipada</option>
+                <option value="Tardía justificada" ${incident.type === 'Tardía justificada' ? 'selected' : ''}>Tardía justificada</option>
+                <option value="Tardía injustificada" ${incident.type === 'Tardía injustificada' ? 'selected' : ''}>Tardía injustificada</option>
+                <option value="Traslado" ${incident.type === 'Traslado' ? 'selected' : ''}>Traslado</option>
+            </select>`;
+            row.cells[1].innerHTML = `<textarea id="editDescription${index}" class="form-control">${incident.description}</textarea>`;
+            row.cells[2].innerHTML = `<input type="date" id="editStartDate${index}" class="form-control" value="${incident.startDate}">`;
+            row.cells[3].innerHTML = `<input type="date" id="editEndDate${index}" class="form-control" value="${incident.endDate}">`;
+            row.cells[5].children[0].style.display = 'none';
+            row.cells[5].children[1].style.display = 'inline';
+        }
+
+        function saveIncident(index) {
+            const employeeName = localStorage.getItem('currentEmployee');
+            const incidents = JSON.parse(localStorage.getItem(employeeName + '_incidents'));
+            incidents[index].type = document.getElementById(`editType${index}`).value;
+            incidents[index].description = document.getElementById(`editDescription${index}`).value;
+            incidents[index].startDate = document.getElementById(`editStartDate${index}`).value;
+            incidents[index].endDate = document.getElementById(`editEndDate${index}`).value;
+            localStorage.setItem(employeeName + '_incidents', JSON.stringify(incidents));
+            loadIncidents();
+        }
+
+        function printIncidents() {
+            const printContent = document.getElementById('incidentTable').outerHTML;
+            const employeeName = document.getElementById('employeeNameTable').outerHTML;
+            const title = '<h2>Incidencias Registradas</h2>';
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = employeeName + title + printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function importData(data) {
+            const employeeName = localStorage.getItem('currentEmployee');
+            const existingIncidents = JSON.parse(localStorage.getItem(employeeName + '_incidents')) || [];
+            const newIncidents = JSON.parse(data);
+            const uniqueIncidents = newIncidents.filter(newIncident => 
+                !existingIncidents.some(existingIncident => existingIncident.id === newIncident.id)
+            );
+            const updatedIncidents = existingIncidents.concat(uniqueIncidents);
+            localStorage.setItem(employeeName + '_incidents', JSON.stringify(updatedIncidents));
+            loadIncidents();
+        }
+    </script>
+</body>
+</html>
